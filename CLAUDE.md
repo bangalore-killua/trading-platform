@@ -29,10 +29,41 @@ a decision, gate result or plan step changes.
 - Nothing in `research/` runs live.
 - Do not build scrapers that bypass bot protection. Use exchange filings, official APIs and licensed feeds.
 
-## Workflow
+## Session rules (every session, no exceptions)
 
-- Feature branch -> pull request -> merge to `main` -> delete the branch. Never commit to `main` directly.
-- Tests mirror the source layout under `tests/`.
+At the start of a session:
+
+1. Read this file, `docs/PLAN.md`, `docs/DECISIONS.md`, `docs/TASKS.md` and `docs/SESSIONS.md`.
+2. Read the latest results file in `docs/` if the task touches strategy or backtests.
+3. Know which task you are working on and its file in `docs/tasks/`. If there is none, ask before writing code.
+4. Run `git fetch` and start from an up-to-date `main`.
+
+During a session:
+
+5. One session, one task, one branch, one pull request.
+6. Update the docs in the same pull request as the change, so they never fall behind the code:
+   a decision goes in `docs/DECISIONS.md`, a plan or gate change in `docs/PLAN.md`, a test result in a
+   dated results file, and a changed rule in this file.
+7. Do not rely on anything said in a chat that is not written in the repo. If it matters, write it down.
+8. If the docs and the code disagree, stop and report it. Do not guess which one is right.
+
+At the end of a session:
+
+9. Update the task file in `docs/tasks/` with status, what was done, what was not, and how it was checked.
+10. Leave the branch pushed and the pull request open or updated. Never leave finished work only on a local machine.
+
+## Git rules
+
+- Never push to `main` directly.
+- Every change goes on a new branch pushed with remote tracking (`git push -u origin <branch>`).
+- Open a pull request before anything merges.
+- Do not merge pull requests. Sujay reviews and merges, unless he says otherwise for a specific PR.
+- Delete the branch after it merges.
+- Branch names: `task/T-<number>-<short-name>`.
+
+## Engineering rules
+
+- Tests mirror the source layout under `tests/`. A change without a test needs a stated reason in the PR.
 - Heavy computation uses processes or compiled code (NumPy, Numba). Threads and async are for network I/O.
 
 ## Open decisions (owner: Sujay)
