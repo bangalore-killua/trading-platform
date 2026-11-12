@@ -21,6 +21,7 @@ results and code, and the task system.
 - [x] Rules enforced as required checks: `tools/check_rules.py` with tests, `.github/workflows/checks.yml`, PR template
 - [x] Branch pushed and pull request opened
 - [ ] `repo-rules` and `tests` set as required status checks in the branch rules for `main` (Sujay)
+- [x] README shows the projected repository structure, dependency rules and build order
 - [ ] Sujay has reviewed the docs for anything missing or wrong
 
 ## Worker notes
