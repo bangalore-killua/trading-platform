@@ -3,7 +3,7 @@
 - **Status:** In review
 - **Plan step:** 0 (setup)
 - **Branch:** task/T-001-skeleton-and-docs
-- **Pull request:** not opened yet (branch not pushed; Claude had no write access on 2026-11-12)
+- **Pull request:** https://github.com/bangalore-killua/trading-platform/pull/1
 - **Depends on:** none
 
 ## Goal
@@ -19,7 +19,7 @@ results and code, and the task system.
 - [x] `docs/SESSIONS.md`, `docs/TASKS.md`, task template written
 - [x] Research code and raw results from the first simulation included
 - [x] Rules enforced as required checks: `tools/check_rules.py` with tests, `.github/workflows/checks.yml`, PR template
-- [ ] Branch pushed and pull request opened
+- [x] Branch pushed and pull request opened
 - [ ] `repo-rules` and `tests` set as required status checks in the branch rules for `main` (Sujay)
 - [ ] Sujay has reviewed the docs for anything missing or wrong
 
@@ -28,4 +28,4 @@ results and code, and the task system.
 Written in the chat session of 2026-11-12. No production code. Simulation scripts are research quality.
 Checked: `pytest -q` (8 tests for the rule checker pass), `ruff check` clean, `python tools/check_rules.py`
 run locally against `origin/main` with this PR's title and description (all checks pass).
-Not checked: the workflow has not run on GitHub yet, because the branch has not been pushed.
+The GitHub workflow runs for the first time on this pull request; see its checks for the result.
