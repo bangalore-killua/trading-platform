@@ -1,0 +1,54 @@
+name: checks
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  repo-rules:
+    name: repo-rules
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Check repository rules
+        env:
+          IS_PR: ${{ github.event_name == 'pull_request' }}
+          BASE_REF: origin/${{ github.base_ref || 'main' }}
+          PR_BRANCH: ${{ github.head_ref }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: python tools/check_rules.py
+
+  tests:
+    name: tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: |
+          python -m pip install -q --upgrade pip
+          pip install -q pytest ruff
+          if [ -f requirements.txt ]; then pip install -q -r requirements.txt; fi
+      - name: Python files compile
+        run: python -m compileall -q common markets services tools tests
+      - name: Lint
+        run: ruff check common markets services tools tests
+      - name: No skipped or disabled tests
+        run: |
+          if grep -rnE "pytest\.mark\.(skip|xfail)|pytest\.skip\(|unittest\.skip" tests; then
+            echo "skipped or expected-failure tests are not allowed; fix the cause"; exit 1
+          fi
+      - name: Tests
+        run: pytest -q
