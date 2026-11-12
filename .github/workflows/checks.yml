@@ -1,0 +1,29 @@
+name: checks
+on:
+  pull_request:
+  push:
+    branches: [main]
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Required docs exist
+        run: |
+          for f in CLAUDE.md docs/PLAN.md docs/DECISIONS.md docs/TASKS.md docs/SESSIONS.md; do
+            test -s "$f" || { echo "missing or empty: $f"; exit 1; }
+          done
+      - name: No data files or secrets committed
+        run: |
+          if git ls-files | grep -E '\.(parquet|csv|pkl|h5|safetensors|gguf)$|(^|/)\.env$'; then
+            echo "data, model or secret files must not be committed"; exit 1
+          fi
+      - name: Python files compile
+        run: python -m compileall -q common markets services research
+      - name: Tests
+        run: |
+          pip install -q pytest
+          if find tests -name 'test_*.py' | grep -q .; then pytest -q; else echo "no tests yet"; fi

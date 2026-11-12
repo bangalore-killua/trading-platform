@@ -61,6 +61,18 @@ At the end of a session:
 - Delete the branch after it merges.
 - Branch names: `task/T-<number>-<short-name>`.
 
+## Keeping `main` working at all times
+
+- `main` must always be in a working state: tests pass and the docs match the code.
+- A pull request is not ready for review until its checks pass. Do not ask for a merge with a failing check.
+- Never disable, skip or delete a failing test to get a pull request through. Fix the cause or report it.
+- Never rewrite history on a shared branch (no force-push to `main`, no rebasing someone else's branch).
+- Never commit secrets (API keys, broker tokens, Telegram tokens). They go in `.env`, which is ignored.
+- Never commit data files or model weights. Document where they come from in `docs/DATA.md`.
+- Nothing that can place a real order may be merged before plan step 6, and then only behind an explicit switch that defaults to off.
+- A change to these rules is itself a pull request that Sujay approves. Sessions do not relax a rule on their own.
+- If following a rule is impossible for a task, stop and say so in the task file. Do not work around it.
+
 ## Engineering rules
 
 - Tests mirror the source layout under `tests/`. A change without a test needs a stated reason in the PR.

@@ -11,6 +11,7 @@ Edited only by the manager session. Details live in `docs/tasks/`.
 ## Waiting on Sujay
 
 - Give Claude write access to the repo, or push the T-001 branch himself.
+- Turn on branch protection for `main` (require a pull request and passing checks).
 - Stop-loss and risk rules (needed before plan step 3).
 - Broker for the intraday data feed.
 - Hosting.

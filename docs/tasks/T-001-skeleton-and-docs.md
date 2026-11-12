@@ -18,7 +18,9 @@ results and code, and the task system.
 - [x] `docs/PLAN.md`, `docs/DECISIONS.md`, `docs/RESULTS-2026-11-first-simulation.md` written
 - [x] `docs/SESSIONS.md`, `docs/TASKS.md`, task template written
 - [x] Research code and raw results from the first simulation included
+- [x] Automated checks workflow added (`.github/workflows/checks.yml`)
 - [ ] Branch pushed and pull request opened
+- [ ] Branch protection turned on for `main` in GitHub settings (Sujay)
 - [ ] Sujay has reviewed the docs for anything missing or wrong
 
 ## Worker notes
