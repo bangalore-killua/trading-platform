@@ -19,7 +19,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 CODE_DIRS = ("common/", "markets/", "services/")
-REQUIRED_DOCS = ("CLAUDE.md", "docs/PLAN.md", "docs/DECISIONS.md", "docs/TASKS.md", "docs/SESSIONS.md")
+REQUIRED_DOCS = ("CLAUDE.md", "docs/DECISIONS.md", "docs/TASKS.md", "docs/SESSIONS.md")
 RULE_FILES = ("CLAUDE.md", ".github/", "tools/check_rules.py")
 FORBIDDEN_SUFFIXES = (".parquet", ".csv", ".pkl", ".pickle", ".h5", ".hdf5", ".feather", ".npz", ".npy",
                       ".safetensors", ".gguf", ".pt", ".pth", ".onnx", ".bin", ".db", ".sqlite")

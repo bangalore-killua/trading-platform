@@ -8,7 +8,7 @@ Checked: <how you verified this works: tests run, backtest re-run, files opened>
 ## Docs updated in this PR
 
 - [ ] Task file in `docs/tasks/` (status and worker notes)
-- [ ] `docs/DECISIONS.md`, `docs/PLAN.md`, results file or `CLAUDE.md`, where the change affects them
+- [ ] `docs/DECISIONS.md`, `docs/PLAN.md` or `CLAUDE.md`, where the change affects them
 
 <!--
 If code changed with no test, add a line:   No-test-reason: <why>

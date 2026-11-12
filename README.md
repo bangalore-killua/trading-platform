@@ -2,27 +2,29 @@
 
 A fresh-start trading platform for Indian stocks first, then commodities and US stocks.
 
-Start with `CLAUDE.md` (project rules and current state), then `docs/PLAN.md` and `docs/DECISIONS.md`.
+This repo currently holds the project structure, the working rules and the automated checks.
+There is no product code yet, and coding does not start until a build plan is approved.
+
+Start with `CLAUDE.md` (project rules and current state), then `docs/DECISIONS.md`.
 
 ## Repository structure
 
-This is the projected layout. The folders exist; most are empty until the plan reaches them
-(see "Build order" below).
+This is the projected layout. The folders exist and are empty.
 
 ```
 trading-platform/
 ├── CLAUDE.md                    # project rules and current state; Claude Code reads it automatically
 ├── README.md
-├── pyproject.toml               # pytest and lint settings
+├── pyproject.toml               # test and lint settings
 │
 ├── common/                      # logic shared by every market and strategy; no market facts
 │   ├── data/                    # loaders, corporate-action adjustment, quality checks
-│   ├── universe/                # liquidity filters, blow-up filter
-│   ├── signals/                 # signal library (momentum, trend, volatility, ...)
+│   ├── universe/                # which instruments are eligible to trade
+│   ├── signals/                 # signal library
 │   ├── priceaction/             # candles, swing structure, multi-timeframe tools
 │   ├── portfolio/               # ranking, position sizing, stock and sector limits
 │   ├── risk/                    # market filter, stops, kill switch
-│   ├── backtest/                # engine, cost models, walk-forward, reports
+│   ├── backtest/                # engine, cost models, reports
 │   ├── execution/               # broker interface (one contract, many brokers)
 │   ├── signal_log/              # tamper-proof record of every signal
 │   ├── alerts/                  # Telegram, dashboard feed
@@ -33,9 +35,9 @@ trading-platform/
 ├── markets/                     # one folder per market; markets never import each other
 │   ├── india/
 │   │   ├── adapters/            # NSE data, broker API, Indian costs and taxes, holidays
-│   │   ├── positional/          # monthly ranking engine (built first)
-│   │   ├── swing/               # 1-3 day trades, price-action based (research until it passes its gate)
-│   │   ├── intraday/            # minute-bar strategies (research until it passes its gate)
+│   │   ├── positional/          # trades held for weeks
+│   │   ├── swing/               # trades held for 1-3 days
+│   │   ├── intraday/            # trades opened and closed the same day
 │   │   └── config/              # universe rules, parameters, limits
 │   ├── us/
 │   │   ├── adapters/            # US data feed, broker, costs, calendar
@@ -53,7 +55,6 @@ trading-platform/
 ├── services/                    # long-running processes: ingest, signal, alert, dashboard
 │
 ├── research/                    # experiments; nothing here runs live or is imported
-│   └── 2026-11-first-simulation/   # code and raw results behind the first results doc
 │
 ├── tests/                       # mirrors the source layout
 │   └── tools/                   # tests for the rule checker
@@ -62,18 +63,17 @@ trading-platform/
 │   └── check_rules.py           # the rule checks CI runs on every pull request
 │
 ├── docs/
-│   ├── PLAN.md                  # steps, gates, ranking engine specification
 │   ├── DECISIONS.md             # dated decision log and open decisions
 │   ├── SESSIONS.md              # how manager and worker sessions coordinate
 │   ├── TASKS.md                 # task board (edited only by the manager session)
-│   ├── tasks/                   # one file per task, plus TEMPLATE.md
-│   ├── RESULTS-2026-11-first-simulation.md
-│   └── DATA.md                  # data sources and licences (written in task T-002)
+│   └── tasks/                   # one file per task, plus TEMPLATE.md
 │
 └── .github/
     ├── workflows/checks.yml     # required checks: repo-rules and tests
     └── pull_request_template.md
 ```
+
+`docs/PLAN.md` will be added once a build plan is approved.
 
 ## How the pieces depend on each other
 
@@ -84,18 +84,6 @@ trading-platform/
 - Nothing imports `research/`.
 
 CI enforces these import boundaries on every pull request.
-
-## Build order
-
-| Plan step | Folders filled in |
-|---|---|
-| 1. Confirm the edge | `research/`, `docs/DATA.md` |
-| 2. Ranking engine | `common/data`, `universe`, `signals`, `portfolio`, `risk`, `backtest`; `markets/india/adapters`, `positional`, `config` |
-| 3. Signal service | `common/signal_log`, `alerts`; `services/` |
-| 4. Paper test | No new folders; live signals are logged for three months |
-| 5. Improve the ranking | `common/graph`, `llm` |
-| 6. Real money and product | `common/execution` |
-| Later | `markets/commodities`, `markets/us`; `common/priceaction` with the `swing` and `intraday` modules as research |
 
 ## Working in this repo
 
