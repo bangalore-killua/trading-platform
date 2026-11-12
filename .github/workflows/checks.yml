@@ -1,29 +1,54 @@
 name: checks
 on:
   pull_request:
+    types: [opened, edited, synchronize, reopened]
   push:
     branches: [main]
+
+permissions:
+  contents: read
+
 jobs:
-  checks:
+  repo-rules:
+    name: repo-rules
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Check repository rules
+        env:
+          IS_PR: ${{ github.event_name == 'pull_request' }}
+          BASE_REF: origin/${{ github.base_ref || 'main' }}
+          PR_BRANCH: ${{ github.head_ref }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: python tools/check_rules.py
+
+  tests:
+    name: tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Required docs exist
+      - name: Install
         run: |
-          for f in CLAUDE.md docs/PLAN.md docs/DECISIONS.md docs/TASKS.md docs/SESSIONS.md; do
-            test -s "$f" || { echo "missing or empty: $f"; exit 1; }
-          done
-      - name: No data files or secrets committed
-        run: |
-          if git ls-files | grep -E '\.(parquet|csv|pkl|h5|safetensors|gguf)$|(^|/)\.env$'; then
-            echo "data, model or secret files must not be committed"; exit 1
-          fi
+          python -m pip install -q --upgrade pip
+          pip install -q pytest ruff
+          if [ -f requirements.txt ]; then pip install -q -r requirements.txt; fi
       - name: Python files compile
-        run: python -m compileall -q common markets services research
-      - name: Tests
+        run: python -m compileall -q common markets services tools tests research
+      - name: Lint
+        run: ruff check common markets services tools tests
+      - name: No skipped or disabled tests
         run: |
-          pip install -q pytest
-          if find tests -name 'test_*.py' | grep -q .; then pytest -q; else echo "no tests yet"; fi
+          if grep -rnE "pytest\.mark\.(skip|xfail)|pytest\.skip\(|unittest\.skip" tests; then
+            echo "skipped or expected-failure tests are not allowed; fix the cause"; exit 1
+          fi
+      - name: Tests
+        run: pytest -q

@@ -73,6 +73,29 @@ At the end of a session:
 - A change to these rules is itself a pull request that Sujay approves. Sessions do not relax a rule on their own.
 - If following a rule is impossible for a task, stop and say so in the task file. Do not work around it.
 
+## What the automated checks enforce
+
+Two required checks run on every pull request: `repo-rules` (`tools/check_rules.py`) and `tests`.
+Run `python tools/check_rules.py` and `pytest -q` locally before pushing.
+
+| Rule | Enforced by |
+|---|---|
+| Branch is named `task/T-<number>-<short-name>` | `repo-rules` |
+| The task's own file in `docs/tasks/` is updated; no other task's file is modified | `repo-rules` |
+| Code change under `common/`, `markets/`, `services/` comes with a doc change | `repo-rules` |
+| Code change comes with a test, or a `No-test-reason:` line in the PR description | `repo-rules` |
+| PR description has `Task: T-<number>` and `Checked: <how>` lines | `repo-rules` |
+| Changes to `CLAUDE.md`, `.github/` or `tools/check_rules.py` have a title starting `[rules]` | `repo-rules` |
+| Required docs exist | `repo-rules` |
+| No data files, model weights, `.env` files, files over 1 MB, or secrets in file contents | `repo-rules` |
+| Import boundaries: `common/` never imports `markets/` or `services/`; a market never imports another market; a strategy module never imports another strategy module; nothing imports `research/` | `repo-rules` |
+| Code compiles, lint passes, no skipped tests, all tests pass | `tests` |
+| No direct push to `main`, PR required, checks must pass | GitHub branch rules |
+
+Not machine-checkable, so sessions and reviewers must hold these themselves: reading the docs at the start,
+no lookahead in signals, code (not an LLM) making trading decisions, nothing able to place real orders before
+step 6, only the manager editing `docs/TASKS.md`, and not merging without Sujay.
+
 ## Engineering rules
 
 - Tests mirror the source layout under `tests/`. A change without a test needs a stated reason in the PR.

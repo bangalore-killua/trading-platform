@@ -13,3 +13,4 @@ A fresh-start trading platform for Indian stocks first, then commodities and US 
 - `research/`: experiments. Nothing here runs live.
 - `services/`: long-running processes.
 - `tests/`: mirrors the source layout.
+- `tools/check_rules.py`: the rule checks CI runs on every pull request.
